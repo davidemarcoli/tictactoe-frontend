@@ -1,0 +1,19 @@
+<h1>Current Player: {{ player }} </h1>
+
+<button nbButton outline status="danger" (click)="boardService.newGame()">Start new Game</button>
+
+
+<h2 *ngIf="boardService.winner">
+  Player {{ boardService.winner }} won the game!
+</h2>
+
+
+<main>
+  <app-square
+    *ngFor="let val of boardService.board; let i = index"
+    [value]="val"
+    (click)="makeMove(i)">
+  </app-square>
+</main>
+
+<div *ngIf="boardService.hasMove">Has Move!</div>
