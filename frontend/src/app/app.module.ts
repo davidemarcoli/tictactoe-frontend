@@ -13,12 +13,15 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
 import {BoardService} from "./services/board.service";
 
 import { ToastrModule } from 'ngx-toastr';
+import { JoinRoomComponent } from './join-room/join-room.component';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardComponent,
     SquareComponent,
+    JoinRoomComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,6 +33,7 @@ import { ToastrModule } from 'ngx-toastr';
     NbEvaIconsModule,
     NbButtonModule,
     ToastrModule.forRoot(),
+    FormsModule,
   ],
   providers: [BoardService, ToastrModule],
   bootstrap: [AppComponent]

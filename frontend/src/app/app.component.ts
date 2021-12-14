@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {BoardService} from "./services/board.service";
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'frontend';
+
+  constructor(public boardService: BoardService) {
+  }
 }

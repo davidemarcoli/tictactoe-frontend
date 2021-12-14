@@ -13,10 +13,14 @@ export class BoardService {
 
   SOCKET_ENDPOINT = AppSettings.BASE_URL;
 
-  socket: any = null;
+  socket: any = io(this.SOCKET_ENDPOINT);
 
   xIsNext: boolean = true;
   winner: any;
+
+  roomName: string = '';
+  userName: string = '';
+  joined: boolean = false;
 
   constructor(private toastr: ToastrService) {
   }
@@ -35,8 +39,8 @@ export class BoardService {
   async setupSocketConnection() {
     console.log('setupSocketConnection');
 
-    this.socket = await io(this.SOCKET_ENDPOINT);
-    console.log(this.socket);
+    // this.socket = await io(this.SOCKET_ENDPOINT);
+    // console.log(this.socket);
 
     // if (this.socket.id) {
     //   this.toastr.success('You\'re connected with the server ' + this.SOCKET_ENDPOINT + '!', 'Connected', {
@@ -58,11 +62,37 @@ export class BoardService {
       console.log('changePlayer');
       this.hasMove = !this.hasMove;
     });
+    this.socket.on('resetPlayer', () => {
+      this.newGameConfig();
+      this.hasMove = false;
+    });
     this.socket.on('position-broadcast', (data: string[]) => {
       console.log('position-broadcast');
       this.board = data;
       this.xIsNext = !this.xIsNext;
       this.winner = this.calculateWinner();
+    });
+  }
+
+  configSocketConnection() {
+    console.log('configSocketConnection');
+    this.socket.emit('roomConfig', [this.userName, this.roomName]);
+
+    this.socket.on('roomFull', () => {
+      alert("Room is full");
+      this.toastr.error('The room ' + this.roomName + ' is full! Try an other one.', 'Room Full', {
+        timeOut: 5000,
+        progressBar: true,
+      });
+    });
+
+    this.socket.on('roomJoined', (room: string) => {
+      console.log(room + ' joined');
+      this.joined = true;
+      this.toastr.success("You've joined the room \'" + this.roomName + "\'.", 'Joined!', {
+        timeOut: 3000,
+        progressBar: true,
+      });
     });
   }
 
