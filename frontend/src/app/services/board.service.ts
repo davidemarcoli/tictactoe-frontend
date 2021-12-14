@@ -1,18 +1,24 @@
 import {io} from "socket.io-client";
+import {ToastrService} from "ngx-toastr";
+import {Injectable} from "@angular/core";
+import {AppSettings} from "../app.settings";
 
+@Injectable({
+  providedIn: 'root',
+})
 export class BoardService {
   hasMove: boolean = false;
 
   board: string[] = [];
 
-  SOCKET_ENDPOINT = 'http://localhost:3000';
+  SOCKET_ENDPOINT = AppSettings.BASE_URL;
 
-  socket: any;
+  socket: any = null;
 
   xIsNext: boolean = true;
   winner: any;
 
-  constructor() {
+  constructor(private toastr: ToastrService) {
   }
 
   newGame() {
@@ -28,7 +34,21 @@ export class BoardService {
 
   async setupSocketConnection() {
     console.log('setupSocketConnection');
+
     this.socket = await io(this.SOCKET_ENDPOINT);
+    console.log(this.socket);
+
+    // if (this.socket.id) {
+    //   this.toastr.success('You\'re connected with the server ' + this.SOCKET_ENDPOINT + '!', 'Connected', {
+    //     timeOut: 3000,
+    //     progressBar: true,
+    //   });
+    // } else {
+    //   console.log(this.socket.id)
+    //   this.toastr.error('Unknown error while connecting with the server ' + this.SOCKET_ENDPOINT + '!', 'Error');
+    // }
+
+
     console.log("Connected to socket server");
     this.socket.on('newGame', () => {
       console.log('newGame');
@@ -42,6 +62,7 @@ export class BoardService {
       console.log('position-broadcast');
       this.board = data;
       this.xIsNext = !this.xIsNext;
+      this.winner = this.calculateWinner();
     });
   }
 
@@ -58,6 +79,24 @@ export class BoardService {
   sendNewGame() {
     console.log('sendNewGame');
     this.socket.emit('newGame');
+  }
+
+  get player() {
+    return this.xIsNext ? 'X' : 'O';
+  }
+
+  makeMove(idx: number) {
+    if (!this.hasMove) return;
+
+    if (!(this.board)[idx]) {
+      this.board.splice(idx, 1, this.player);
+      this.xIsNext = !this.xIsNext;
+      this.sendPlayerChange();
+    }
+
+    this.sendMove(this.board);
+
+    this.winner = this.calculateWinner();
   }
 
   calculateWinner() {

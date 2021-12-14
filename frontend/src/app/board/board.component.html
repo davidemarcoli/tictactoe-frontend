@@ -1,4 +1,4 @@
-<h1>Current Player: {{ player }} </h1>
+<h1>Current Player: {{ boardService.player }} </h1>
 
 <button nbButton outline status="danger" (click)="boardService.newGame()">Start new Game</button>
 
@@ -12,7 +12,7 @@
   <app-square
     *ngFor="let val of boardService.board; let i = index"
     [value]="val"
-    (click)="makeMove(i)">
+    (click)="boardService.makeMove(i)">
   </app-square>
 </main>
 

@@ -12,6 +12,8 @@ import {NbThemeModule, NbLayoutModule, NbButtonModule} from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import {BoardService} from "./services/board.service";
 
+import { ToastrModule } from 'ngx-toastr';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,8 +29,9 @@ import {BoardService} from "./services/board.service";
     NbLayoutModule,
     NbEvaIconsModule,
     NbButtonModule,
+    ToastrModule.forRoot(),
   ],
-  providers: [BoardService],
+  providers: [BoardService, ToastrModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
