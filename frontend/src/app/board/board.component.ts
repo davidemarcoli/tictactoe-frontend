@@ -10,8 +10,8 @@ export class BoardComponent implements OnInit {
 
   constructor(public boardService: BoardService) { }
 
-  ngOnInit(): void {
-    this.boardService.setupSocketConnection();
+  async ngOnInit(): Promise<void> {
+    await this.boardService.setupSocketConnection();
     this.boardService.newGame();
   }
 
@@ -20,7 +20,7 @@ export class BoardComponent implements OnInit {
   }
 
   makeMove(idx: number) {
-    // if (!this.boardService.hasMove) return;
+    if (!this.boardService.hasMove) return;
 
     if (!this.boardService.board[idx]) {
       this.boardService.board.splice(idx, 1, this.player);

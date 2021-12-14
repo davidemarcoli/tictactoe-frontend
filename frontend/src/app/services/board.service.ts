@@ -5,7 +5,7 @@ export class BoardService {
 
   board: string[] = [];
 
-  SOCKET_ENDPOINT = 'localhost:3000';
+  SOCKET_ENDPOINT = 'http://localhost:3000';
 
   socket: any;
 
@@ -16,32 +16,48 @@ export class BoardService {
   }
 
   newGame() {
-    this.board = Array(9).fill(null);
-    this.winner = null;
-    this.xIsNext = true;
-    this.socket.emit('newGame');
+    this.newGameConfig();
+    this.sendNewGame();
   }
 
-  setupSocketConnection() {
-    this.socket = io(this.SOCKET_ENDPOINT);
+  newGameConfig() {
+    this.board = Array(9).fill(null);
+    this.winner = null;
+    // this.xIsNext = true;
+  }
+
+  async setupSocketConnection() {
+    console.log('setupSocketConnection');
+    this.socket = await io(this.SOCKET_ENDPOINT);
+    console.log("Connected to socket server");
     this.socket.on('newGame', () => {
-      this.newGame();
+      console.log('newGame');
+      this.newGameConfig();
     });
     this.socket.on('changePlayer', () => {
+      console.log('changePlayer');
       this.hasMove = !this.hasMove;
     });
     this.socket.on('position-broadcast', (data: string[]) => {
+      console.log('position-broadcast');
       this.board = data;
       this.xIsNext = !this.xIsNext;
     });
   }
 
   sendMove(data: string[]) {
+    console.log('sendMove');
     this.socket.emit('position', data);
   }
 
   sendPlayerChange() {
+    console.log('sendPlayerChange');
     this.socket.emit('changePlayer');
+  }
+
+  sendNewGame() {
+    console.log('sendNewGame');
+    this.socket.emit('newGame');
   }
 
   calculateWinner() {
