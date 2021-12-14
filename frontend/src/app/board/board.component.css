@@ -8,3 +8,13 @@ app-square {
   border: 1px gray solid;
   height: 200px;
 }
+
+.your-turn {
+  color: green;
+  font-weight: bold;
+}
+
+.enemy-turn {
+  color: red;
+  font-weight: bold;
+}

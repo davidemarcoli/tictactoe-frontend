@@ -1,19 +1,43 @@
-<h1>Current Player: {{ boardService.player }} </h1>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8">
+      <h1>Current Player:
+        <span class="your-turn" *ngIf="boardService.hasMove">You</span>
+        <span class="enemy-turn" *ngIf="!boardService.hasMove">Enemy</span>
+      </h1>
 
-<button nbButton outline status="danger" (click)="boardService.newGame()">Start new Game</button>
+      <h2 *ngIf="boardService.winner">
+        Player {{ boardService.winner }} won the game!
+      </h2>
 
 
-<h2 *ngIf="boardService.winner">
-  Player {{ boardService.winner }} won the game!
-</h2>
+      <main>
+        <app-square
+          *ngFor="let val of boardService.board; let i = index"
+          [value]="val"
+          (click)="boardService.makeMove(i)">
+        </app-square>
+      </main>
+
+<!--      <div *ngIf="boardService.hasMove">Has Move!</div>-->
+
+      <br>
+      <button type="button" class="btn btn-danger" *ngIf="!boardService.winner" (click)="boardService.newGame()">Start new Game</button>
+      <button type="button" class="btn btn-primary" *ngIf="boardService.winner" (click)="boardService.newGame()">Start new Game</button>
 
 
-<main>
-  <app-square
-    *ngFor="let val of boardService.board; let i = index"
-    [value]="val"
-    (click)="boardService.makeMove(i)">
-  </app-square>
-</main>
+    </div>
 
-<div *ngIf="boardService.hasMove">Has Move!</div>
+    <div class="col-lg-4">
+
+      <br>
+      <h2>Players:</h2>
+
+      <ul class="list-group">
+        <div *ngFor="let nickname of boardService.nicknames">
+        <li class="list-group-item" *ngIf="nickname">{{ nickname }}</li>
+        </div>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -21,6 +21,7 @@ export class BoardService {
   roomName: string = '';
   userName: string = '';
   joined: boolean = false;
+  nicknames: string[] = [];
 
   constructor(private toastr: ToastrService) {
   }
@@ -38,22 +39,7 @@ export class BoardService {
 
   async setupSocketConnection() {
     console.log('setupSocketConnection');
-
-    // this.socket = await io(this.SOCKET_ENDPOINT);
-    // console.log(this.socket);
-
-    // if (this.socket.id) {
-    //   this.toastr.success('You\'re connected with the server ' + this.SOCKET_ENDPOINT + '!', 'Connected', {
-    //     timeOut: 3000,
-    //     progressBar: true,
-    //   });
-    // } else {
-    //   console.log(this.socket.id)
-    //   this.toastr.error('Unknown error while connecting with the server ' + this.SOCKET_ENDPOINT + '!', 'Error');
-    // }
-
-
-    console.log("Connected to socket server");
+    // console.log("Connected to socket server");
     this.socket.on('newGame', () => {
       console.log('newGame');
       this.newGameConfig();
@@ -86,13 +72,47 @@ export class BoardService {
       });
     });
 
-    this.socket.on('roomJoined', (room: string) => {
-      console.log(room + ' joined');
+    this.socket.on('roomJoined', (clients: any[]) => {
+      console.log(clients);
+      console.log(this.roomName + ' joined');
       this.joined = true;
-      this.toastr.success("You've joined the room \'" + this.roomName + "\'.", 'Joined!', {
-        timeOut: 3000,
-        progressBar: true,
+
+      let nicknames = '';
+
+      clients.forEach(client => {
+        if (client.nickname !== this.userName) {
+          nicknames += client.nickname + ', ';
+        }
       });
+
+      this.nicknames = nicknames.split(', ');
+
+
+      if (clients.length == 0) {
+        this.toastr.success("You've joined the room \'" + this.roomName + "\'.\n" +
+          "You're the only one here :(", 'Joined!', {
+          timeOut: 5000,
+          progressBar: true,
+        });
+      } else {
+        this.toastr.success("You've joined the room \'" + this.roomName + "\'.\n" +
+          "Players in the Room: " + nicknames, 'Joined!', {
+          timeOut: 5000,
+          progressBar: true,
+        });
+      }
+
+
+    });
+
+    this.socket.on('player-update', (clients: any[]) => {
+      let nicknames = '';
+
+      clients.forEach(client => {
+        nicknames += client.nickname + ", ";
+      });
+
+      this.nicknames = nicknames.split(', ');
     });
   }
 
