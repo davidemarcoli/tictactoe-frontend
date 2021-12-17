@@ -65,7 +65,6 @@ export class BoardService {
     this.socket.emit('roomConfig', [this.userName, this.roomName]);
 
     this.socket.on('roomFull', () => {
-      alert("Room is full");
       this.toastr.error('The room ' + this.roomName + ' is full! Try an other one.', 'Room Full', {
         timeOut: 5000,
         progressBar: true,
@@ -73,7 +72,6 @@ export class BoardService {
     });
 
     this.socket.on('roomJoined', (clients: any[]) => {
-      console.log(clients);
       console.log(this.roomName + ' joined');
       this.joined = true;
 

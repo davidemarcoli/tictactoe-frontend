@@ -1,0 +1,10 @@
+<div class="container">
+  <br><br>
+  <label for="userName">Username</label>
+  <input type="text" class="form-control" id="userName" name="userName" [(ngModel)]="boardService.userName">
+  <br>
+  <label for="userName">Room Name</label>
+  <input type="text" class="form-control" id="roomName" name="roomName" [(ngModel)]="boardService.roomName">
+  <br>
+  <button (click)="boardService.configSocketConnection()" class="btn btn-primary">Connect</button>
+</div>
